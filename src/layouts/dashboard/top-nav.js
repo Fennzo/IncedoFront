@@ -1,16 +1,14 @@
 import PropTypes from 'prop-types';
-import BellIcon from '@heroicons/react/24/solid/BellIcon';
-import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import Bars3Icon from '@heroicons/react/24/solid/Bars3Icon';
 import MagnifyingGlassIcon from '@heroicons/react/24/solid/MagnifyingGlassIcon';
 import {
   Avatar,
-  Badge,
   Box,
   IconButton,
   Stack,
   SvgIcon,
   Tooltip,
+  Typography,
   useMediaQuery
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
@@ -34,13 +32,13 @@ export const TopNav = (props) => {
           backgroundColor: (theme) => alpha(theme.palette.background.default, 0.8),
           position: 'sticky',
           left: {
-            lg: `${SIDE_NAV_WIDTH}px`
+            lg: `${SIDE_NAV_WIDTH}px`,
           },
           top: 0,
           width: {
-            lg: `calc(100% - ${SIDE_NAV_WIDTH}px)`
+            lg: `calc(100% - ${SIDE_NAV_WIDTH}px)`,
           },
-          zIndex: (theme) => theme.zIndex.appBar
+          zIndex: (theme) => theme.zIndex.appBar,
         }}
       >
         <Stack
@@ -50,7 +48,7 @@ export const TopNav = (props) => {
           spacing={2}
           sx={{
             minHeight: TOP_NAV_HEIGHT,
-            px: 2
+            px: 2,
           }}
         >
           <Stack
@@ -65,6 +63,7 @@ export const TopNav = (props) => {
                 </SvgIcon>
               </IconButton>
             )}
+            {/* todo search */}
             <Tooltip title="Search">
               <IconButton>
                 <SvgIcon fontSize="small">
@@ -78,36 +77,21 @@ export const TopNav = (props) => {
             direction="row"
             spacing={2}
           >
-            <Tooltip title="Contacts">
-              <IconButton>
-                <SvgIcon fontSize="small">
-                  <UsersIcon />
-                </SvgIcon>
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Notifications">
-              <IconButton>
-                <Badge
-                  badgeContent={4}
-                  color="success"
-                  variant="dot"
-                >
-                  <SvgIcon fontSize="small">
-                    <BellIcon />
-                  </SvgIcon>
-                </Badge>
-              </IconButton>
-            </Tooltip>
-            <Avatar
+            {/* Display username and account dropdown */}
+            <Typography variant="body1">{`Welcome, ${localStorage.getItem('username').split('@')[0]}`}</Typography>
+            <IconButton
               onClick={accountPopover.handleOpen}
               ref={accountPopover.anchorRef}
-              sx={{
-                cursor: 'pointer',
-                height: 40,
-                width: 40
-              }}
-              src="/assets/avatars/avatar-anika-visser.png"
-            />
+            >
+              <Avatar
+                sx={{
+                  cursor: 'pointer',
+                  height: 40,
+                  width: 40,
+                }}
+                src="/assets/avatars/avatar-anika-visser.png"
+              />
+            </IconButton>
           </Stack>
         </Stack>
       </Box>
@@ -121,5 +105,5 @@ export const TopNav = (props) => {
 };
 
 TopNav.propTypes = {
-  onNavOpen: PropTypes.func
+  onNavOpen: PropTypes.func,
 };

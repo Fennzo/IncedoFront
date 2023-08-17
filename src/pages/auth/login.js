@@ -1,21 +1,9 @@
 import { useState } from 'react';
-//import axios from "axios";
-import { useNavigate } from "react-router";
+import axios from 'axios';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import {
-  Box,
-  Button,
-  FormHelperText, Link,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Box, Button, FormHelperText, Link, Stack, TextField, Typography } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 
@@ -26,36 +14,6 @@ const Page = () => {
   const [username,setUsername] = useState('')
   const [password,setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
- // const navigate = useNavigate();
-
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-      submit: null
-    },
-    validationSchema: Yup.object({
-      email: Yup
-        .string()
-        .email('Must be a valid email')
-        .max(255)
-        .required('Email is required'),
-      password: Yup
-        .string()
-        .max(255)
-        .required('Password is required')
-    })
-    // onSubmit: async (values, helpers) => {
-    //   try {
-    //     await auth.signIn(values.email, values.password);
-    //     router.push('/');
-    //   } catch (err) {
-    //     helpers.setStatus({ success: false });
-    //     helpers.setErrors({ submit: err.message });
-    //     helpers.setSubmitting(false);
-    //   }
-    // }
-  });
 
   // const handleMethodChange = (event, value) => {
   //   setMethod(value);
@@ -63,7 +21,7 @@ const Page = () => {
 
   const doLogin =()=>{
     if(username === 'admin@incedo.com' && password === 'admin@123'){
-      navigate("/admin");
+      router.push("/admin");
       return;
     }
     async function login(){
@@ -92,10 +50,16 @@ const Page = () => {
 
     switch(role){
       case 'EXECUTIVE':
-        navigate('/executive')
+        router.push('/executive')
         break;
       case 'SUPPLIER':
-        navigate('/supplier')
+        router.push('/supplier')
+        break;
+      case 'MANAGER':
+        router.push("/manager")
+        break
+      case "CUSTOMER":
+        router.push("/customer")
         break;
       default:
         setErrorMsg('Access Forbidden')
@@ -107,7 +71,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Login | Devias Kit</title>
+        <title>Login | Incedo</title>
       </Head>
       <Box
         sx={{
@@ -139,18 +103,11 @@ const Page = () => {
                 </Link>
               </Typography>
             </Stack>
-           {/* <Tabs onChange={handleMethodChange} sx={{ mb: 3 }} value={method}>
-              <Tab label="Email" value="email" />
-            </Tabs>*/}
-
                 <Stack spacing={3}>
                   <TextField
-                    error={!!(formik.touched.email && formik.errors.email)}
                     fullWidth
-                    helperText={formik.touched.email && formik.errors.email}
                     label="Email Address"
                     name="email"
-                    onBlur={formik.handleBlur}
                     onChange={(e)=>{
                       setUsername(e.target.value)
                       setErrorMsg('')}}
@@ -158,25 +115,20 @@ const Page = () => {
                     value={username}
                   />
                   <TextField
-                    error={!!(formik.touched.password && formik.errors.password)}
                     fullWidth
-                    helperText={formik.touched.password && formik.errors.password}
                     label="Password"
                     name="password"
-                    onBlur={formik.handleBlur}
                     onChange={(e)=>{
                       setPassword(e.target.value)
                       setErrorMsg('')}}
                     type="password"
                     value={password}
                   />
-
+                  {errorMsg && ( // Only render FormHelperText if errorMsg is not empty
+                    <FormHelperText>
+                      {errorMsg}
+                    </FormHelperText>)}
                 </Stack>
-                {formik.errors.submit && (
-                  <Typography color="error" sx={{ mt: 3 }} variant="body2">
-                    {formik.errors.submit}
-                  </Typography>
-                )}
                 <Button fullWidth size="large" sx={{ mt: 3 }} onClick={()=>doLogin()} variant="contained">
                   Continue
                 </Button>
