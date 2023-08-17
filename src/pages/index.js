@@ -14,6 +14,8 @@ import { OverviewTraffic } from 'src/sections/overview/overview-traffic';
 const now = new Date();
 
 const Page = () => (
+
+  //CheckAuth
   <>
     <Head>
       <title>
@@ -224,6 +226,7 @@ const Page = () => (
 );
 
 Page.getLayout = (page) => (
+
   <DashboardLayout>
     {page}
   </DashboardLayout>

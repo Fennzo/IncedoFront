@@ -4,13 +4,10 @@ import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Box, Button, FormHelperText, Link, Stack, TextField, Typography } from '@mui/material';
-import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 
 const Page = () => {
   const router = useRouter();
-  const auth = useAuth();
-  const [method, setMethod] = useState('email');
   const [username,setUsername] = useState('')
   const [password,setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
