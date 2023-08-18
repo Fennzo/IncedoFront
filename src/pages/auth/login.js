@@ -31,6 +31,7 @@ const Page = () => {
           }
         });
         localStorage.setItem('username', username)
+        localStorage.setItem('id', response.data.user.id)
         localStorage.setItem('token', token)
         localStorage.setItem('isLoggedIn', true)
         processRole(response.data.user.role);
@@ -83,7 +84,7 @@ const Page = () => {
           sx={{
             maxWidth: 550,
             px: 3,
-            py: '100px',
+            py: '350px',
             width: '100%'
           }}
         >
@@ -97,6 +98,13 @@ const Page = () => {
                 Don&apos;t have an account?&nbsp;
                 <Link component={NextLink} href="/auth/register" underline="hover" variant="subtitle2">
                   Register
+                </Link>
+              </Typography>
+
+              <Typography color="text.secondary" variant="body2">
+                Need some help here? &nbsp;
+                <Link component={NextLink} href="/auth/resetpasswordfirst" underline="hover" variant="subtitle2">
+                  Forgot Password
                 </Link>
               </Typography>
             </Stack>
