@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { styled } from '@mui/material/styles';
 import { SideNav } from './side-nav';
@@ -23,7 +23,7 @@ const LayoutContainer = styled('div')({
 });
 
 export const Layout = (props) => {
-  const { children } = props;
+  const { children, selectedCategory } = props;
   const pathname = usePathname();
   const [openNav, setOpenNav] = useState(false);
 
@@ -50,10 +50,11 @@ export const Layout = (props) => {
       <SideNav
         onClose={() => setOpenNav(false)}
         open={openNav}
+        selectedCategory={selectedCategory}
       />
       <LayoutRoot>
         <LayoutContainer>
-          {children}
+          {React.cloneElement(children, { selectedCategory: selectedCategory || 0 })}
         </LayoutContainer>
       </LayoutRoot>
     </>

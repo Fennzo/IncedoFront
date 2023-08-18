@@ -1,14 +1,13 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { Box, Button, TextField } from '@mui/material';
+import { router } from 'next/client';
 
 function ResetPasswordSecond(props) {
   const [password, setPassword] = useState('');
   const [repassword, setRepassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-  const navigate = useNavigate();
 
   const resetPassword = async () => {
     if (password !== repassword) {
@@ -46,14 +45,13 @@ function ResetPasswordSecond(props) {
         }}
       >
         <div>
-          <Typography variant="h4">Reset Password</Typography>
           <div className="card">
             <div className="card-body">
               {successMsg ? (
                 <div className="alert alert-info" role="alert">
                   {successMsg}&nbsp;&nbsp;
                   <label>Go to: </label>&nbsp;
-                  <Button variant="text" color="primary" onClick={() => navigate('/')}>
+                  <Button variant="text" color="primary" onClick={() => router.push('/auth/login')}>
                     Login
                   </Button>
                 </div>
@@ -69,8 +67,6 @@ function ResetPasswordSecond(props) {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                variant="outlined"
-                margin="normal"
               />
               <TextField
                 fullWidth
@@ -79,10 +75,8 @@ function ResetPasswordSecond(props) {
                 type="password"
                 value={repassword}
                 onChange={(e) => setRepassword(e.target.value)}
-                variant="outlined"
-                margin="normal"
               />
-              <Button fullWidth variant="contained" color="info" onClick={() => resetPassword()}>
+              <Button fullWidth variant="contained" color="primary" onClick={() => resetPassword()}>
                 Reset Password
               </Button>
             </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
+import ResetPasswordSecond from './ResetPasswordSecond'; // Import the ResetPasswordSecond component
 
 function ResetPasswordFirst() {
   const router = useRouter();
@@ -24,6 +25,14 @@ function ResetPasswordFirst() {
     }
   };
 
+  const handleNext = () => {
+    // Navigate to ResetPasswordSecond with username as query parameter
+    router.push({
+      pathname: '/reset-password-second', // Update the pathname to match your route
+      query: { username: username },
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -43,7 +52,7 @@ function ResetPasswordFirst() {
         }}
       >
         <div>
-          <Typography variant="h4">Reset Password</Typography>
+          {validStatus === false && <Typography variant="h4">Reset Password</Typography>}
           {validStatus === '' ? (
             <div>
               <Box
@@ -69,7 +78,6 @@ function ResetPasswordFirst() {
                     name="username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    variant="outlined"
                   />
                   <TextField
                     fullWidth
@@ -77,7 +85,6 @@ function ResetPasswordFirst() {
                     name="safetyPin"
                     value={safetyPin}
                     onChange={(e) => setSafetyPin(e.target.value)}
-                    variant="outlined"
                   />
                   <Button fullWidth variant="contained" color="primary" type="submit">
                     Verify
@@ -88,6 +95,9 @@ function ResetPasswordFirst() {
           ) : (
             <div>
               {/* Show ResetPasswordSecond component */}
+              <ResetPasswordSecond username={username} />
+              {/* You can also use the handleNext function to navigate */}
+              {/* <Button onClick={handleNext}>Next</Button> */}
             </div>
           )}
         </div>

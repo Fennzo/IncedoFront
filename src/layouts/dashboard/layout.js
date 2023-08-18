@@ -50,11 +50,10 @@ export const Layout = (props) => {
       <SideNav
         onClose={() => setOpenNav(false)}
         open={openNav}
-        selectedCategory={selectedCategory}
       />
       <LayoutRoot>
         <LayoutContainer>
-          {React.cloneElement(children, { selectedCategory: selectedCategory || 0 })}{/* Pass selectedCategory prop */}
+          {children}
         </LayoutContainer>
       </LayoutRoot>
     </>

@@ -30,6 +30,7 @@ const Page = () => {
             'Authorization': 'Basic ' + token
           }
         });
+
         localStorage.setItem('username', username)
         localStorage.setItem('id', response.data.user.id)
         localStorage.setItem('token', token)

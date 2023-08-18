@@ -1,38 +1,29 @@
 import Head from 'next/head';
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Badge, Box, Button, Card, CardContent, Container, Grid, Typography } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
 import { Layout as CustomerLayout } from '../layouts/customer/layout';
 import { useEffect, useState } from 'react';
+import ProductDialog from '../layouts/customer/ProductDialog';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const now = new Date();
 
 const CustomerPage = (props) => {
-
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [cartArray, setCartArray] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [isCartExpanded, setIsCartExpanded] = useState(false);
-  const { selectedCategory  = 0} = props
+  const { selectedCategory} = props
   const [couponCode, setCouponCode] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [reviews, setReviews] = useState(null);
+  const [isProductDialogOpen, setIsProductDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-
+  console.log("selectedcat" , selectedCategory)
     //todo props change
     let url;
     if ( selectedCategory !== 0)
@@ -44,10 +35,24 @@ const CustomerPage = (props) => {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-       // console.log("products data", data);
         setProducts(data);
       });
+
+    fetch('http://localhost:8282/product/reviews/all')
+      .then(response => response.json())
+      .then(data => {
+        setReviews(data)
+      });
+
+    console.log("reviews,", reviews)
   }, [selectedCategory]);
+
+  const openProductDialog = (product) => {
+    setSelectedProduct(product);
+    // fetchProductReviews(product.id);
+    // console.log("inter reviews", reviews)
+    setIsProductDialogOpen(true);
+  };
 
   const addToCart = (p) => {
     const existingProductIndex = cartArray.findIndex(item => item.id === p.id);
@@ -70,35 +75,59 @@ const CustomerPage = (props) => {
     setIsDialogOpen(true);
   };
 
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
-  };
-  // todo setup dto
-  const handleCheckOut = async () => {
+  // const handleDialogClose = () => {
+  //   setIsDialogOpen(false);
+  // };
 
+  const fetchProductReviews = (pid) => {
+    axios
+      .get(`http://localhost:8282/product/reviews/` + pid)
+      .then((response) => {
+        setReviews(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching reviews:', error);
+      });
+  };
+
+  useEffect(() => {
+    if (selectedProduct !== null) {
+      fetchProductReviews(selectedProduct.id);
+    }
+  }, [selectedProduct]);
+
+  // todo setup dto
+  const handleCheckOut =  () => {
     const entries = cartArray.map(item => ({
       pid: item.id,
       qty: item.quantity
     }));
-    const checkoutobj = {
-      entries,
-      couponCode: couponCode
-    };
 
-    console.log("checkoutobj", checkoutobj)
-    let cid = localStorage.setItem('id')
-    try{
-      let token = localStorage.getItem('token');
-      const purchaseResponse = await axios.post(`http://localhost:8282/product/purchase/${cid}`,{
-        headers:{
-          'Authorization': 'Basic ' + token
-        }
+    console.log("checkoutobj", entries)
+    router.push({
+      pathname: '/checkout',
+      query: {cartArray: JSON.stringify(entries)}
+    })
+    // const productPurchaseDto = {
+    //   entries,
+    //   couponCode: couponCode
+    // };
 
-      });
-    }
-    catch (err){
 
-    }
+    // let cid = localStorage.getItem('id')
+    // try{
+    //   let token = localStorage.getItem('token');
+    //   const purchaseResponse = await axios.post(`http://localhost:8282/product/purchase/${cid}`,{
+    //     headers:{
+    //       'Authorization': 'Basic ' + token
+    //     }
+    //   });
+    //
+    //
+    // }
+    // catch (err){
+    //   console.error('Error fetching reviews:', err);
+    // }
 
   }
 
@@ -117,31 +146,46 @@ const CustomerPage = (props) => {
                   sx={{
                     border: product.quantity === 0 ? '1px solid #ccc' : 'none',
                     boxShadow: product.quantity === 0 ? 'none' : '0 2px 4px rgba(0, 0, 0, 0.1)',
-                    cursor: product.quantity === 0 ? 'not-allowed' : 'pointer',
-                    marginLeft: 0, // Move products to the left
-                    marginRight: 'auto' // Center products horizontally
+                    marginLeft: 0,
+                    marginRight: 'auto',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    height: '100%',
                   }}
-                  onClick={() => addToCart(product)}
                 >
-                  <CardContent>
-                    <Typography variant="h6">{product.title}</Typography>
-                    <Typography variant="body2" color="textSecondary">{product.description}</Typography>
-                    <Typography variant="h6" sx={{ mt: 2 }}>{`$${product.price}`}</Typography>
-                    <Typography variant="body2" color="textSecondary">{`Quantity: ${product.quantity}`}</Typography>
-                    <Typography variant="body2" color="textSecondary">{product.tagline}</Typography>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      disabled={product.quantity === 0}
-                      sx={{ mt: 2 }}
-                      startIcon={<ShoppingCart />}
-                    >
-                      Add to Cart
-                    </Button>
-                  </CardContent>
+                  <div onClick={() => openProductDialog(product)}>
+                    {/* Display product information */}
+                    <CardContent>
+                      <Typography variant="h6">{product.title}</Typography>
+                      <Typography variant="h6" sx={{ mt: 2 }}>{`$${product.price}`}</Typography>
+                      <Typography variant="body2" color="textSecondary">{`Quantity: ${product.quantity}`}</Typography>
+                      <Typography variant="body2" color="textSecondary">{product.tagline}</Typography>
+                    </CardContent>
+                  </div>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={product.quantity === 0}
+                    sx={{ mb: 2 }}
+                    startIcon={<ShoppingCart />}
+                    onClick={() => addToCart(product)}
+                  >
+                    Add to Cart
+                  </Button>
                 </Card>
               </Grid>
             ))}
+
+            {/* Use the ProductDialog component */}
+            <ProductDialog
+              open={isProductDialogOpen}
+              onClose={() => setIsProductDialogOpen(false)}
+              product={selectedProduct}
+              reviews={reviews}
+              addToCart={addToCart} // Assuming you have defined this function in your parent component
+              disabled={cartArray.length === 0}
+            />
           </Grid>
         </Container>
       </Box>
@@ -162,16 +206,7 @@ const CustomerPage = (props) => {
         <Typography variant="body2" color="textSecondary">
           {isCartExpanded && (
             <>
-              <Typography variant="h6" gutterBottom>
-                Items in Cart
-              </Typography>
-              {cartArray.map(item => (
-                <div key={item.id}>
-                  <Typography>{item.title}</Typography>
-                  <Typography>{`Price: $${item.price}`}</Typography>
-                  <Typography>{`Quantity: ${item.quantity}`}</Typography> {/* Added quantity field */}
-                </div>
-              ))}
+              {/* ... (other cart details rendering) */}
             </>
           )}
           Total Amount: ${totalAmount.toFixed(2)}
@@ -179,6 +214,11 @@ const CustomerPage = (props) => {
         <Badge badgeContent={cartArray.length} color="primary">
           <ShoppingCart />
         </Badge>
+        {cartArray.length === 0 && ( // Conditional rendering for the warning
+          <Typography variant="body2" color="red" mt={1}>
+            The cart is empty. Please add items before checking out.
+          </Typography>
+        )}
         <Button
           onClick={() => setIsCartExpanded(prevState => !prevState)}
           sx={{ mt: 2 }}
@@ -186,7 +226,7 @@ const CustomerPage = (props) => {
           {isCartExpanded ? 'Collapse Cart' : 'Expand Cart'}
         </Button>
         <Button
-          onClick={handleDialogOpen}
+          onClick={handleCheckOut}
           variant="contained"
           color="primary"
           sx={{ mt: 2, width: 'max-content' }}
@@ -194,37 +234,6 @@ const CustomerPage = (props) => {
           Checkout
         </Button>
       </Box>
-
-      {/* Checkout Dialog */}
-      <Dialog open={isDialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Checkout</DialogTitle>
-        <DialogContent>
-          {/* Display item details */}
-          {cartArray.map(item => (
-            <div key={item.id}>
-              <Typography>{item.title}</Typography>
-              <Typography>{`Quantity: ${item.quantity}`}</Typography>
-              <Typography>{`Price: $${item.price}`}</Typography>
-              <br/>
-            </div>
-          ))}
-          {/* Coupon Code input field */}
-          <TextField
-            label="Coupon Code"
-            value={couponCode}
-            onChange={(e) => setCouponCode(e.target.value)}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleCheckOut} color="primary">
-            Purchase now
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

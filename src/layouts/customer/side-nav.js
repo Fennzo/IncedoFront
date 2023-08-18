@@ -1,5 +1,4 @@
 import NextLink from 'next/link';
-import { usePathname } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { Box, Divider, Drawer, Stack, Typography, useMediaQuery } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
@@ -8,7 +7,6 @@ import { useEffect, useState } from 'react';
 
 export const SideNav = (props) => {
   const { open, onClose } = props;
-  const pathname = usePathname();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
 
   // Fetch categories data from '/category/all'
@@ -88,13 +86,15 @@ export const SideNav = (props) => {
               <SideNavItem
                 key={category.id}
                 title={category.name}
-                onClick={()=> props.selectedCategory(category.id)}
+                onClick={()=> {console.log("Clicked category:", category.id);
+                  let categoryId = category.id
+                  props.categoryId}}
               />
             ))}
             <SideNavItem
               key= '33'
               title='All'
-              onClick={()=> props.selectedCategory(0)}
+              onClick={()=>props.setSelectedCategory(0)}
             />
           </Stack>
         </Box>
