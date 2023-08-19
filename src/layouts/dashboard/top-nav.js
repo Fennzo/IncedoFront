@@ -78,7 +78,11 @@ export const TopNav = (props) => {
             spacing={2}
           >
             {/* Display username and account dropdown */}
-            <Typography variant="body1">{`Welcome, ${localStorage.getItem('username').split('@')[0]}`}</Typography>
+            <Typography variant="body1">
+              {localStorage.getItem('username')
+                ? `Welcome, ${localStorage.getItem('username').split('@')[0]}`
+                : ''}
+            </Typography>
             <IconButton
               onClick={accountPopover.handleOpen}
               ref={accountPopover.anchorRef}

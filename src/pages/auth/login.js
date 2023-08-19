@@ -11,11 +11,6 @@ const Page = () => {
   const [username,setUsername] = useState('')
   const [password,setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-
-  // const handleMethodChange = (event, value) => {
-  //   setMethod(value);
-  // };
-
   const doLogin =()=>{
     if(username === 'admin@incedo.com' && password === 'admin@123'){
       router.push("/admin");
@@ -30,14 +25,23 @@ const Page = () => {
             'Authorization': 'Basic ' + token
           }
         });
-
+        localStorage.setItem('userObj', JSON.stringify(response.data));
+        localStorage.setItem('street', response.data.address.street)
+        localStorage.setItem('hno', response.data.address.hno)
+        localStorage.setItem('zipcode', response.data.address.zipcode)
+        localStorage.setItem('contact', response.data.contact)
+        localStorage.setItem('city', response.data.address.city)
+        localStorage.setItem('name', response.data.name)
         localStorage.setItem('username', username)
-        localStorage.setItem('id', response.data.user.id)
+        localStorage.setItem('id', response.data.id)
         localStorage.setItem('token', token)
         localStorage.setItem('isLoggedIn', true)
+
+       // console.log("logged in contact", localStorage.getItem("contact"))
         processRole(response.data.user.role);
       }
       catch(err){
+        console.log("login error", err)
         setErrorMsg('Invalid Credentials!!')
       }
     }

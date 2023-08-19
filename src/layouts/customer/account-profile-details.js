@@ -12,30 +12,11 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  },
-  {
-    value: 'los-angeles',
-    label: 'Los Angeles'
-  }
-];
-
-export const  AccountProfileDetails = () => {
+export const AccountProfileDetails = () => {
   const [profile, setProfile] = useState({
     name: localStorage.getItem('name'),
     username: localStorage.getItem('username'),
-    contact: localStorage.getItem('contact'),
+    contact: localStorage.getItem("contact"),
     hno: localStorage.getItem('hno'),
     city: localStorage.getItem('city'),
     zipcode: localStorage.getItem('zipcode'),
@@ -52,10 +33,13 @@ export const  AccountProfileDetails = () => {
     []
   );
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
-      const userObj = JSON.parse(localStorage.getItem('userObj'));
-
+      let userObj = JSON.parse(localStorage.getItem('userObj'));
+      console.log("userObj", userObj)
+      // Remove the user portion from userObj
+      delete userObj.user.authorities;
       // Update the userObj's fields with the profile fields
       userObj.name = profile.name;
       userObj.username = profile.username;
@@ -67,7 +51,7 @@ export const  AccountProfileDetails = () => {
 
       // Send PUT requests to update customer and address
       await axios.put('http://localhost:8282/customer/update', userObj);
-      await axios.put('http://localhost:8282/address/update', userObj.address);
+     await axios.put('http://localhost:8282/address/update', userObj.address);
 
       // Update the userObj in localStorage
       localStorage.setItem('userObj', JSON.stringify(userObj));
@@ -100,11 +84,9 @@ export const  AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  helperText="Please specify the first name"
                   label="Name"
-                  name="Name"
+                  name="name"
                   onChange={handleChange}
-                  required
                   value={profile.name}
                 />
               </Grid>
@@ -120,9 +102,9 @@ export const  AccountProfileDetails = () => {
                 <TextField
                   fullWidth
                   label="Email Address"
-                  name="email"
-                  onChange={handleChange}
-                  required
+                  disabled
+                  name="username"
+                  // onChange={handleChange}
                   value={profile.username}
                 />
               </Grid>
@@ -135,7 +117,7 @@ export const  AccountProfileDetails = () => {
                   label="Contact"
                   name="contact"
                   onChange={handleChange}
-                  value={profile.phone}
+                  value={profile.contact}
                 />
               </Grid>
               <Grid
@@ -156,7 +138,7 @@ export const  AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  label="street"
+                  label="Street"
                   name="street"
                   onChange={handleChange}
                   value={profile.street}
@@ -168,7 +150,7 @@ export const  AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  label="zipcode"
+                  label="Zipcode"
                   name="zipcode"
                   onChange={handleChange}
                   value={profile.zipcode}
@@ -180,7 +162,7 @@ export const  AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  label="city"
+                  label="City"
                   name="city"
                   onChange={handleChange}
                   value={profile.city}
@@ -192,7 +174,7 @@ export const  AccountProfileDetails = () => {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained">
+          <Button variant="contained" type="submit">
             Save details
           </Button>
         </CardActions>

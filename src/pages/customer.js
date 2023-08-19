@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { Badge, Box, Button, Card, CardContent, Container, Grid, Typography } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
 import { Layout as CustomerLayout } from '../layouts/customer/layout';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProductDialog from '../layouts/customer/ProductDialog';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -15,22 +15,22 @@ const CustomerPage = (props) => {
   const [cartArray, setCartArray] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [isCartExpanded, setIsCartExpanded] = useState(false);
-  const { selectedCategory} = props
-  const [couponCode, setCouponCode] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [reviews, setReviews] = useState(null);
   const [isProductDialogOpen, setIsProductDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(0);
 
   useEffect(() => {
-  console.log("selectedcat" , selectedCategory)
+    // console.log("setselectedcategory", setSelectedCategory)
+  // console.log("selectedcat" , selectedCategory)
     //todo props change
     let url;
     if ( selectedCategory !== 0)
       url ='http://localhost:8282/product/categeory/${selectedCategory}'
     else if ( selectedCategory === 0)
       url = 'http://localhost:8282/product/all'
-    console.log("url " + url)
+    // console.log("url " + url)
 
     fetch(url)
       .then(response => response.json())
@@ -44,7 +44,6 @@ const CustomerPage = (props) => {
         setReviews(data)
       });
 
-    console.log("reviews,", reviews)
   }, [selectedCategory]);
 
   const openProductDialog = (product) => {
@@ -55,29 +54,31 @@ const CustomerPage = (props) => {
   };
 
   const addToCart = (p) => {
-    const existingProductIndex = cartArray.findIndex(item => item.id === p.id);
+    const updatedCartArray = [...cartArray];
+    const existingProductIndex = updatedCartArray.findIndex(item => item.id === p.id);
 
     if (existingProductIndex !== -1) {
       // Update existing product in the cart
-      const updatedCartArray = [...cartArray];
       updatedCartArray[existingProductIndex].quantity += 1;
       updatedCartArray[existingProductIndex].price += p.price;
-      setCartArray(updatedCartArray);
     } else {
       // Add new product to the cart
-      setCartArray(prevCart => [...prevCart, { ...p, quantity: 1 }]);
+      updatedCartArray.push({ ...p, quantity: 1 });
     }
 
-    setTotalAmount(prevTotal => prevTotal + p.price);
-  }
+    const total = updatedCartArray.reduce((sum, item) => sum + item.price, 0);
+    console.log("updated cart", updatedCartArray)
+    setCartArray(updatedCartArray);
+    setTotalAmount(total);
+    console.log("cartarray", cartArray)
+
+    // Store the updated cartArray in localStorage
+    localStorage.setItem("cartArray", JSON.stringify(updatedCartArray));
+  };
 
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
   };
-
-  // const handleDialogClose = () => {
-  //   setIsDialogOpen(false);
-  // };
 
   const fetchProductReviews = (pid) => {
     axios
@@ -97,39 +98,9 @@ const CustomerPage = (props) => {
   }, [selectedProduct]);
 
   // todo setup dto
-  const handleCheckOut =  () => {
-    const entries = cartArray.map(item => ({
-      pid: item.id,
-      qty: item.quantity
-    }));
-
-    console.log("checkoutobj", entries)
-    router.push({
-      pathname: '/checkout',
-      query: {cartArray: JSON.stringify(entries)}
-    })
-    // const productPurchaseDto = {
-    //   entries,
-    //   couponCode: couponCode
-    // };
-
-
-    // let cid = localStorage.getItem('id')
-    // try{
-    //   let token = localStorage.getItem('token');
-    //   const purchaseResponse = await axios.post(`http://localhost:8282/product/purchase/${cid}`,{
-    //     headers:{
-    //       'Authorization': 'Basic ' + token
-    //     }
-    //   });
-    //
-    //
-    // }
-    // catch (err){
-    //   console.error('Error fetching reviews:', err);
-    // }
-
-  }
+  const redirectCheckOut =  () => {
+    localStorage.setItem("cartArray", JSON.stringify(cartArray))
+    router.push('/checkout')  }
 
   return (
     <>
@@ -184,7 +155,6 @@ const CustomerPage = (props) => {
               product={selectedProduct}
               reviews={reviews}
               addToCart={addToCart} // Assuming you have defined this function in your parent component
-              disabled={cartArray.length === 0}
             />
           </Grid>
         </Container>
@@ -203,22 +173,23 @@ const CustomerPage = (props) => {
         <Typography variant="h6" gutterBottom>
           Cart
         </Typography>
+        <Box>
+          {isCartExpanded && cartArray.length > 0 ? (
+            cartArray.map(item => (
+              <div key={item.id}>
+                <Typography variant="body2" color="textSecondary">
+                  {`${item.title} x ${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`}
+                </Typography>
+              </div>
+            ))
+          ) : null}
+        </Box>
         <Typography variant="body2" color="textSecondary">
-          {isCartExpanded && (
-            <>
-              {/* ... (other cart details rendering) */}
-            </>
-          )}
           Total Amount: ${totalAmount.toFixed(2)}
         </Typography>
         <Badge badgeContent={cartArray.length} color="primary">
           <ShoppingCart />
         </Badge>
-        {cartArray.length === 0 && ( // Conditional rendering for the warning
-          <Typography variant="body2" color="red" mt={1}>
-            The cart is empty. Please add items before checking out.
-          </Typography>
-        )}
         <Button
           onClick={() => setIsCartExpanded(prevState => !prevState)}
           sx={{ mt: 2 }}
@@ -226,10 +197,11 @@ const CustomerPage = (props) => {
           {isCartExpanded ? 'Collapse Cart' : 'Expand Cart'}
         </Button>
         <Button
-          onClick={handleCheckOut}
+          onClick={redirectCheckOut}
           variant="contained"
           color="primary"
           sx={{ mt: 2, width: 'max-content' }}
+          disabled={cartArray.length === 0}
         >
           Checkout
         </Button>
@@ -239,7 +211,12 @@ const CustomerPage = (props) => {
 };
 
 CustomerPage.getLayout = (page) => (
-  <CustomerLayout>{page}</CustomerLayout>
+  <CustomerLayout
+    setSelectedCategory={page.props.setSelectedCategory}
+    selectedCategory={page.props.selectedCategory}
+  >
+    {page}
+  </CustomerLayout>
 );
 
 export default CustomerPage;

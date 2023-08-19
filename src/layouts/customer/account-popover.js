@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { Box, Divider, MenuItem, MenuList, Popover, Typography } from '@mui/material';
@@ -9,15 +8,22 @@ export const AccountPopover = (props) => {
   const router = useRouter();
   const auth = useAuth();
 
-  const handleSignOut = useCallback(
-    () => {
-      onClose?.();
-      auth.signOut();
-      router.push('/auth/login');
-      localStorage.clear()
-    },
-    [onClose, auth, router]
-  );
+  const handleSignOut = () => {
+    onClose?.();
+    auth.signOut();
+    router.push('/auth/login');
+    localStorage.clear();
+  };
+
+  function handleAccountLink() {
+    onClose?.();
+    router.push('/customer/profile');
+  }
+
+  function handleOrdersLink() {
+    onClose?.();
+    router.push('/customer/orders');
+  }
 
   return (
     <Popover
@@ -36,15 +42,12 @@ export const AccountPopover = (props) => {
           px: 2
         }}
       >
-        <Typography variant="overline">
-          Account
-        </Typography>
-        <Typography
-          color="text.secondary"
-          variant="body2"
-        >
-          Anika Visser
-        </Typography>
+          <Typography
+            color="text.secondary"
+            variant="body2"
+          >
+            {localStorage.getItem('name')}
+          </Typography>
       </Box>
       <Divider />
       <MenuList
@@ -57,6 +60,12 @@ export const AccountPopover = (props) => {
           }
         }}
       >
+        <MenuItem onClick={handleAccountLink}>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={handleOrdersLink}>
+          Orders
+        </MenuItem>
         <MenuItem onClick={handleSignOut}>
           Sign out
         </MenuItem>

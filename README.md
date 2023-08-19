@@ -81,7 +81,7 @@ material-kit-react
 		├── 404.js
 		├── _app.js
 		├── _document.js
-		├── account.js
+		├── profile.js
 		├── companies.js
 		├── customers.js
 		├── index.js

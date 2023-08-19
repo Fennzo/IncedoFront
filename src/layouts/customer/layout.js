@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 import { styled } from '@mui/material/styles';
 import { SideNav } from './side-nav';
 import { TopNav } from './top-nav';
+import { router } from 'next/client';
 
 const SIDE_NAV_WIDTH = 280;
 
@@ -26,6 +27,8 @@ export const Layout = (props) => {
   const { children, selectedCategory } = props;
   const pathname = usePathname();
   const [openNav, setOpenNav] = useState(false);
+  // Check if the current URL matches '/customers'
+  const showSideNav = router.pathname === '/customers';
 
   const handlePathnameChange = useCallback(
     () => {
@@ -50,6 +53,7 @@ export const Layout = (props) => {
       <SideNav
         onClose={() => setOpenNav(false)}
         open={openNav}
+        setSelectedCategory={props.setSelectedCategory} // Pass setSelectedCategory as a prop
         selectedCategory={selectedCategory}
       />
       <LayoutRoot>

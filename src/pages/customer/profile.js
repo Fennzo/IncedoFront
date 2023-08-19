@@ -1,14 +1,14 @@
 import Head from 'next/head';
 import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { AccountProfile } from 'src/sections/account/account-profile';
-import { AccountProfileDetails } from 'src/sections/account/account-profile-details';
+import { AccountProfile } from 'src/layouts/customer/account-profile';
+import { AccountProfileDetails } from 'src/layouts/customer/account-profile-details';
+import { Layout as CustomerLayout } from 'src/layouts/customer/layout';
 
 const Page = () => (
   <>
     <Head>
       <title>
-        Account | Devias Kit
+        Profile
       </title>
     </Head>
     <Box
@@ -22,7 +22,7 @@ const Page = () => (
         <Stack spacing={3}>
           <div>
             <Typography variant="h4">
-              Account
+              Profile
             </Typography>
           </div>
           <div>
@@ -53,9 +53,8 @@ const Page = () => (
 );
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
-    {page}
-  </DashboardLayout>
+  <CustomerLayout>{page}</CustomerLayout>
+
 );
 
 export default Page;

@@ -23,7 +23,7 @@ const ProductDialog = ({ open, onClose, product, reviews, addToCart }) => {
           {reviews.length !== 0 && (
             <div>
               <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-                Reviews:
+                <strong>Quantity:</strong>
               </Typography>
               {reviews.map((review) => (
                 <div key={review.id}>

@@ -87,8 +87,7 @@ export const SideNav = (props) => {
                 key={category.id}
                 title={category.name}
                 onClick={()=> {console.log("Clicked category:", category.id);
-                  let categoryId = category.id
-                  props.categoryId}}
+                  props.setSelectedCategory(category.id)}}
               />
             ))}
             <SideNavItem
