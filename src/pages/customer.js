@@ -1,11 +1,11 @@
 import Head from 'next/head';
-import { Badge, Box, Button, Card, CardContent, Container, Grid, Typography } from '@mui/material';
-import { ShoppingCart } from '@mui/icons-material';
-import { Layout as CustomerLayout } from '../layouts/customer/layout';
-import React, { useEffect, useState } from 'react';
+import {Badge, Box, Button, Card, CardContent, Container, Grid, Typography} from '@mui/material';
+import {ShoppingCart} from '@mui/icons-material';
+import {Layout as CustomerLayout} from '../layouts/customer/layout';
+import React, {useEffect, useState} from 'react';
 import ProductDialog from '../layouts/customer/ProductDialog';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 
 const now = new Date();
 
@@ -20,11 +20,11 @@ const CustomerPage = (props) => {
   const [isProductDialogOpen, setIsProductDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(0);
-
+  //todo selected category
   useEffect(() => {
     // console.log("setselectedcategory", setSelectedCategory)
   // console.log("selectedcat" , selectedCategory)
-    //todo props change
+
     let url;
     if ( selectedCategory !== 0)
       url ='http://localhost:8282/product/categeory/${selectedCategory}'

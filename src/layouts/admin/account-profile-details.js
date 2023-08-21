@@ -43,8 +43,6 @@ export const AccountProfileDetails = () => {
       // Remove the user portion from userObj
       delete userObj.user.authorities;
       // Update the userObj's fields with the profile fields
-      userObj.name = profile.name;
-      userObj.contact = profile.contact;
       userObj.address.hno = profile.hno;
       userObj.address.street = profile.street;
       userObj.address.city = profile.city;
@@ -52,13 +50,15 @@ export const AccountProfileDetails = () => {
 
       // Send PUT requests to update customer and address
       try{
-        await axios.put('http://localhost:8282/customer/update', userObj);
+        await axios.put('http://localhost:8282/admin/update', userObj);
         await axios.put('http://localhost:8282/address/update', userObj.address);
         setSuccessMessage("Profile updated successfully!");
       }
       catch (error){
         console.error("Error updating profile:", error);
       }
+
+
 
       // Update the userObj in localStorage
       localStorage.setItem('userObj', JSON.stringify(userObj));
@@ -93,7 +93,7 @@ export const AccountProfileDetails = () => {
                   fullWidth
                   label="Name"
                   name="name"
-                  onChange={handleChange}
+                  disabled
                   value={profile.name}
                 />
               </Grid>
@@ -123,7 +123,7 @@ export const AccountProfileDetails = () => {
                   fullWidth
                   label="Contact"
                   name="contact"
-                  onChange={handleChange}
+                  disabled
                   value={profile.contact}
                 />
               </Grid>

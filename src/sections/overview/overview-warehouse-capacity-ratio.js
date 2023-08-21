@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import CurrencyDollarIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
-import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import {Avatar, Box, Card, CardContent, LinearProgress, Stack, SvgIcon, Typography} from '@mui/material';
 
-export const OverviewTotalProfit = (props) => {
+export const OverviewWarehouseCapacityRatio = (props) => {
   const { value, sx } = props;
 
   return (
@@ -17,32 +17,39 @@ export const OverviewTotalProfit = (props) => {
           <Stack spacing={1}>
             <Typography
               color="text.secondary"
+              gutterBottom
               variant="overline"
             >
-              Total Profit
+              Warehouse capacity
             </Typography>
             <Typography variant="h4">
-              {value}
+              {value}%
             </Typography>
           </Stack>
           <Avatar
             sx={{
-              backgroundColor: 'primary.main',
+              backgroundColor: 'warning.main',
               height: 56,
               width: 56
             }}
           >
             <SvgIcon>
-              <CurrencyDollarIcon />
+              <WarehouseIcon />
             </SvgIcon>
           </Avatar>
         </Stack>
+        <Box sx={{ mt: 3 }}>
+          <LinearProgress
+            value={value}
+            variant="determinate"
+          />
+        </Box>
       </CardContent>
     </Card>
   );
 };
 
-OverviewTotalProfit.propTypes = {
-  value: PropTypes.string,
+OverviewWarehouseCapacityRatio.propTypes = {
+  value: PropTypes.number.isRequired,
   sx: PropTypes.object
 };

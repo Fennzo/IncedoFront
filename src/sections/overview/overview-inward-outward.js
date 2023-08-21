@@ -1,17 +1,7 @@
 import PropTypes from 'prop-types';
-import ArrowPathIcon from '@heroicons/react/24/solid/ArrowPathIcon';
-import ArrowRightIcon from '@heroicons/react/24/solid/ArrowRightIcon';
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  SvgIcon
-} from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
-import { Chart } from 'src/components/chart';
+import {Card, CardContent, CardHeader, Typography} from '@mui/material';
+import {alpha, useTheme} from '@mui/material/styles';
+import {Chart} from 'src/components/chart';
 
 const useChartOptions = () => {
   const theme = useTheme();
@@ -104,56 +94,36 @@ const useChartOptions = () => {
   };
 };
 
-export const OverviewSales = (props) => {
+export const OverviewInwardOutward = (props) => {
   const { chartSeries, sx } = props;
   const chartOptions = useChartOptions();
 
   return (
-    <Card sx={sx}>
-      <CardHeader
-        action={(
-          <Button
-            color="inherit"
-            size="small"
-            startIcon={(
-              <SvgIcon fontSize="small">
-                <ArrowPathIcon />
-              </SvgIcon>
-            )}
-          >
-            Sync
-          </Button>
-        )}
-        title="Sales"
-      />
-      <CardContent>
-        <Chart
-          height={350}
-          options={chartOptions}
-          series={chartSeries}
-          type="bar"
-          width="100%"
+      <Card sx={sx}>
+        <CardHeader
+            title="Inward vs outward"
         />
-      </CardContent>
-      <Divider />
-      <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Button
-          color="inherit"
-          endIcon={(
-            <SvgIcon fontSize="small">
-              <ArrowRightIcon />
-            </SvgIcon>
-          )}
-          size="small"
-        >
-          Overview
-        </Button>
-      </CardActions>
-    </Card>
+        <CardContent sx={{ position: 'relative' }}>
+          <Chart
+              height={350}
+              options={chartOptions}
+              series={chartSeries}
+              type="bar"
+              width="100%"
+          />
+          {/* Custom labels */}
+          <Typography variant="caption" sx={{ position: 'absolute', left: '40%', color: 'theme.palette.text.secondary' }}>
+            Inward
+          </Typography>
+          <Typography variant="caption" sx={{ position: 'absolute', left: '60%' }}>
+            Outward
+          </Typography>
+        </CardContent>
+      </Card>
   );
 };
 
-OverviewSales.protoTypes = {
+OverviewInwardOutward.protoTypes = {
   chartSeries: PropTypes.array.isRequired,
   sx: PropTypes.object
 };

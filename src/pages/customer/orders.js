@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {
-  Box,
-  Button,
-  Container,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TableSortLabel
+    Box,
+    Button,
+    Container,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TableSortLabel
 } from '@mui/material';
-import { Layout as CustomerLayout } from 'src/layouts/customer/layout';
+import {Layout as CustomerLayout} from 'src/layouts/customer/layout';
 
 const Page = () => {
   const customerId = localStorage.getItem('id');

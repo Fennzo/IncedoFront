@@ -52,7 +52,7 @@ export const AccountProfileDetails = () => {
 
       // Send PUT requests to update customer and address
       try{
-        await axios.put('http://localhost:8282/customer/update', userObj);
+        await axios.put('http://localhost:8282/manager/update', userObj);
         await axios.put('http://localhost:8282/address/update', userObj.address);
         setSuccessMessage("Profile updated successfully!");
       }

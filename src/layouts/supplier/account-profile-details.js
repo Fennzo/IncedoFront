@@ -51,14 +51,8 @@ export const AccountProfileDetails = () => {
       userObj.address.zipcode = profile.zipcode;
 
       // Send PUT requests to update customer and address
-      try{
-        await axios.put('http://localhost:8282/customer/update', userObj);
-        await axios.put('http://localhost:8282/address/update', userObj.address);
-        setSuccessMessage("Profile updated successfully!");
-      }
-      catch (error){
-        console.error("Error updating profile:", error);
-      }
+      await axios.put('http://localhost:8282/manager/update', userObj);
+      await axios.put('http://localhost:8282/address/update', userObj.address);
 
       // Update the userObj in localStorage
       localStorage.setItem('userObj', JSON.stringify(userObj));

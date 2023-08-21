@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import axios from 'axios';
 import Head from 'next/head';
 import NextLink from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Box, Button, FormHelperText, Link, Stack, TextField, Typography } from '@mui/material';
-import { Layout as AuthLayout } from 'src/layouts/auth/layout';
+import {useRouter} from 'next/navigation';
+import {Box, Button, FormHelperText, Link, Stack, TextField, Typography} from '@mui/material';
+import {Layout as AuthLayout} from 'src/layouts/auth/layout';
 
 const Page = () => {
   const router = useRouter();
@@ -12,10 +12,10 @@ const Page = () => {
   const [password,setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const doLogin =()=>{
-    if(username === 'admin@incedo.com' && password === 'admin@123'){
-      router.push("/admin");
-      return;
-    }
+    // if(username === 'admin@incedo.com' && password === 'admin@123'){
+    //   router.push("/admin");
+    //   return;
+    // }
     async function login(){
       try{
         let token = window.btoa(username + ':' + password);
@@ -63,6 +63,9 @@ const Page = () => {
         break
       case "CUSTOMER":
         router.push("/customer")
+        break;
+      case "ADMIN":
+        router.push("/admin")
         break;
       default:
         setErrorMsg('Access Forbidden')

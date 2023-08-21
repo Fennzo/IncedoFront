@@ -1,16 +1,7 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Paper,
-  Typography
-} from '@mui/material';
-import { Layout as CustomerLayout } from '../../layouts/customer/layout';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import {Box, Button, Container, Grid, InputAdornment, MenuItem, Paper, Typography} from '@mui/material';
+import {Layout as CustomerLayout} from '../../layouts/customer/layout';
+import {useRouter} from 'next/router';
+import {useEffect, useState} from 'react';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
@@ -161,9 +152,9 @@ const CheckoutPage = () => {
     }
 
     if((address.hno !== newAddress.hno && newAddress.hno !== '') ||
-      address.city !== newAddress.city ||
-      address.zipcode !== newAddress.zipcode ||
-      address.street !== newAddress.street){
+      (address.city !== newAddress.city && newAddress.city !== '') ||
+      (address.zipcode !== newAddress.zipcode && newAddress.zipcode !== '')||
+      (address.street !== newAddress.street && newAddress.street !== '')){
       try{
         const response = await axios.put("http://localhost:8282/address/update", newAddress)
       }
